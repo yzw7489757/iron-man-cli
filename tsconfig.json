@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "commonjs",
+    "target": "es2018",
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    // "strict": true,
+    // "listFiles": true,
+    // "noErrorTruncation": true,
+    "resolveJsonModule": true,
+    "diagnostics": true
+  },
+  "include": [
+    "bin/index.js",
+    "./*.js",
+    "src/**/*.js",
+    "build/**/*.js",
+    "./src/types/**/*.d.ts"
+  ]
+}
