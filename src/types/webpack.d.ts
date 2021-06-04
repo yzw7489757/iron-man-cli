@@ -22,6 +22,12 @@ declare global {
       }
     }
 
+    export interface ReactConfig {
+      // automatic 自动导入JSX转换到函数
+      runtime?: 'classic' | 'automatic';
+      development?: boolean;
+    }
+
     interface CssConfig {
       sourceMap?: boolean,
       loaderOptions?: {
@@ -73,23 +79,21 @@ declare global {
       https?: boolean | https.ServerOptions;
       mock?: boolean;
       host?: string;
-      env?: Record<string, string>;
+      env?: {
+        typescript?: boolean,
+        react: boolean | ReactConfig
+      }
       alias?: Record<string, string>;
       resources?: ResourceConfig;
+
+      // loader 
+      css?: CssConfig;
 
       dll?: string[];
 
       publicPath?: string;
       filename?: string;
       filenameHashing?: boolean;
-
-      // loader 
-      css?: CssConfig;
-
-      tslint?: {
-        lintOnSave: boolean, // 开启运行时检测
-        forkTsOptions?: any;
-      }
 
       chainWebpack?: (config: Config) => void;
     }

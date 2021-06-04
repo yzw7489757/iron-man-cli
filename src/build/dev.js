@@ -1,15 +1,14 @@
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
+const chalk = require('chalk')
 const { getAvailablePort } = require('../utils/getPort')
-
 /**
- * @param {WebpackConfig.Options} options 
+ * @param {WebpackConfig.InnerOptions} options 
  */
 module.exports = async function (options) {
   const host = options.host || 'localhost';
   const https = options.https;
   const config = require('./base')(options)
-  const webpack = require('webpack')
-  const chalk = require('chalk')
-  const WebpackDevServer = require('webpack-dev-server')
   const port = options.port || 8080
   const publicPath = options.publicPath || '/'
 
@@ -51,12 +50,17 @@ module.exports = async function (options) {
   server.listen(devPort)
 
   new Promise(() => {
+    const origin = `${https ? 'https': 'http'}://${host}:${devPort}`
+    const devAdr = `- dev  at: ${origin}${publicPath}\n`;
+    const mockAdr = options.mock ? `- mock  at: ${origin}/api/\n` : ''
+    const common = 'App running at:\n' + devAdr + mockAdr;
+
     compiler.hooks.done.tap('dev', (stats) => {
-      const origin = `${https ? 'https': 'http'}://${host}:${devPort}`
-      const devAdr = ` - dev  at: ${origin}${publicPath}\n`;
-      const mockAdr = options.mock ? `- mock  at: ${origin}/api/\n` : ''
-      const common = 'App running at:\n' + devAdr + mockAdr
-      console.log(chalk.cyan(common))
+      if(stats.hasErrors()){
+        console.log(chalk.yellow(stats.compilation.errors))
+      } else {
+        console.log(chalk.cyan(common))
+      }
     })
   })
 }

@@ -1,14 +1,46 @@
+const path = require('path');
+const { isDev, isTest } = require('../utils/env');
+const { isObject } = require('../utils/object');
+
+/**
+ * 生成 React 运行时配置
+ * @see https://babeljs.io/docs/en/babel-preset-react;
+ * @param {WebpackConfig.InnerOptions['env']} env 
+ * @return {WebpackConfig.ReactConfig | null}
+ */
+function generatorReactConfig(env) {
+  if(!env.react) {
+    return null
+  }
+
+  /** @type {WebpackConfig.ReactConfig} */
+  let config = {
+    runtime: 'classic',
+    development: isDev() || isTest(),
+  }
+  if(isObject(env.react)) {
+    Object.assign(config, {
+      ...(env.react.runtime !== 'automatic' ? { useBuiltIns: true } : {})
+    })
+  } 
+  return config;
+}
+
 // [babel-loader 配置]
 /**
  * @type {WebpackConfig.LocalConfigIterator}
  * @name babel-loader
  * @description babel-loader 配置
  */
-module.exports = ({ config }) => {
+module.exports = ({ config, options }) => {
+  const { env } = options
+
+  const reactConfig = generatorReactConfig(env);
   const presets = [
-    ['@babel/typescript'],
+    env.typescript && [require('@babel/preset-typescript')],
+    reactConfig && [require('@babel/preset-react'), reactConfig],
     [
-      '@babel/preset-env',
+      require('@babel/preset-env'),
       {
         modules: false,
         targets: {
@@ -19,24 +51,32 @@ module.exports = ({ config }) => {
         }
       }
     ]
-  ]
+
+  ].filter(Boolean)
   const babelConf = {
     env: {
       test: {
-        plugins: ['@babel/plugin-transform-modules-commonjs']
+        plugins: [require('@babel/plugin-transform-modules-commonjs')]
       }
     },
     presets,
     plugins: [
-      'transform-class-properties',
-      '@babel/proposal-object-rest-spread',
-      '@babel/plugin-syntax-dynamic-import',
-      '@babel/plugin-proposal-class-properties',
-      ['import', { libraryName: 'antd', style: true }]
-    ]
+      require('babel-plugin-macros'),
+      require('@babel/plugin-proposal-object-rest-spread'),
+      require('@babel/plugin-syntax-dynamic-import'),
+      require('@babel/plugin-proposal-class-properties'),
+      env.typescript && [
+        require('@babel/plugin-proposal-decorators'),
+        { legacy: true },
+      ],
+      require('@babel/plugin-proposal-optional-chaining'),
+      // require('@babel/plugin-proposal-nullish-coalescing-operator').default,
+      [require('babel-plugin-import'), { libraryName: 'antd', style: true }]
+    ].filter(Boolean)
   }
 
   const baseRule = config.module.rule('babel').test(/.[jt]sx?$/)
+  
   return () => {
     baseRule
       .use('babel')

@@ -12,3 +12,11 @@ exports.isDev = function() {
 exports.isProd = function() {
   return process.env.NODE_ENV === 'production'
 }
+
+/**
+ * 测试环境
+ * @returns {boolean}
+ */
+exports.isTest = function() {
+  return process.env.NODE_ENV === 'test'
+}

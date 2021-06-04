@@ -1,11 +1,11 @@
 const ErrorConstructor = require('./ErrorConstructor');
 
-module.exports = class DevEntryFileNameInValid extends ErrorConstructor {
+module.exports = class DevEntryNameInValid extends ErrorConstructor {
   /**
    * dev server 入口文件名无效
    * @param {string} message 
    */
   constructor(message) {
-    super(message, 'DevEntryFileNameInValid')
+    super(`entry ${message} is non-existent in [options.pages]`, 'DevEntryNameInValid')
   }
 }

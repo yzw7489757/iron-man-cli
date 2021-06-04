@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 
+
 /**
  * @type {Commander.CommanderStandard}
  * @param {Commander.Instructions} instructions 
@@ -13,30 +14,29 @@ const dev = (instructions) => {
       .command('dev [app-page]')
       .description('构建开发环境')
       .option('-d, --dll', '合并差分包')
-      .action(async (/** @type {string} */ name, /** @type {Record<string, string>} */ cmd) => {
+      .action(async (/** @type {string | void} */ name, /** @type {Record<string, string>} */ cmd) => {
+
         process.env.NODE_ENV = 'development';
-
         const options = cleanArgs(cmd)
-        /** @type {WebpackConfig.InnerOptions} */
-        const args = Object.assign(options, { name }, boxConfig)
-        const choices = [];
-        if (!name && boxConfig.pages) {
-          Object.keys(boxConfig.pages).forEach((page) => {
-            choices.push({
-              name: page,
-              value: page
-            })
-          })
 
+        /** @type {WebpackConfig.InnerOptions} */
+        const args = Object.assign(options, { name: name || '' }, boxConfig)
+
+       
+
+        if (!name && boxConfig.pages) {
           const choicesPage = await inquirer.prompt([{
             type: 'list',
             name: 'page',
             message: '请选择您要编译的页面',
-            choices
+            choices: Object.keys(boxConfig.pages).map((page) => ({
+              name: page,
+              value: page
+            }))
           }])
 
           args.name = choicesPage.page
-        }
+        } 
 
         require('../build/dev')(args)
       })

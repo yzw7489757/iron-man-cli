@@ -65,9 +65,9 @@ exports.getAllCommands = function() {
    */
   const RegisterCommands = [];
 
-  localCommanderFiles.forEach((name) => {
-    const cwdPath = path.join(localCommanderDir, name)
-    RegisterCommands.push(require(cwdPath))
+  localCommanderFiles.forEach((commanderName) => {
+    const localCommander = path.join(localCommanderDir, commanderName)
+    RegisterCommands.push(require(localCommander))
   })
 
   // const { getAllPluginIdOfPackageJson } = require('@pkb/shared-utils')

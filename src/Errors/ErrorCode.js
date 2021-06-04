@@ -1,4 +1,5 @@
 exports.ErrorCode = {
   Unknown: 'Unknown',
-  DevEntryFileNameInValid: 'DevEntryFileNameInValid'
+  DevEntryNameInValid: 'DevEntryNameInValid',
+  EntryFileNameInValid: 'EntryFileNameInValid',
 }
