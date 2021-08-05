@@ -1,4 +1,7 @@
 // [别名配置]
+
+const { resolveByCurrentPositionWithExistent } = require('../utils/path')
+
 /**
  * @type {WebpackConfig.LocalConfigIterator}
  * @name alias
@@ -8,21 +11,26 @@ module.exports = ({ config, options, resolve }) => {
   const fs = require('fs')
   const conf = options.alias
   return () => {
-    // 生成默认别名
-    const dirs = fs.readdirSync(resolve('src'))
+
     let aliasConfig = config.resolve
       .extensions
       .merge(['.mjs', '.js', '.jsx', '.vue', '.ts', '.tsx', '.json', '.wasm'])
       .end()
       .alias
-    dirs.forEach((v) => {
-      const stat = fs.statSync(resolve(`src/${v}`))
-      if (stat.isDirectory()) {
-        aliasConfig = aliasConfig.set(`@${v}`, resolve(`src/${v}`))
-      }
-    })
 
-    // 用户配置别名
+    // 判断是否有src
+    if (resolveByCurrentPositionWithExistent('src')) {
+      // 生成src默认别名
+      const dirs = fs.readdirSync(resolve('src'))
+      dirs.forEach((v) => {
+        const stat = fs.statSync(resolve(`src/${v}`))
+        if (stat.isDirectory()) {
+          aliasConfig = aliasConfig.set(`@${v}`, resolve(`src/${v}`))
+        }
+      })
+    }
+
+    // 用户使用配置别名
     if (conf && conf.alias) {
       const keys = Object.keys(conf.alias)
       keys.forEach((key) => {

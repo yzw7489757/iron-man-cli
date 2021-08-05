@@ -33,7 +33,7 @@ function generatorReactConfig(env) {
  * @description babel-loader 配置
  */
 module.exports = ({ config, options }) => {
-  const { env } = options
+  const { env = {} } = options
 
   const reactConfig = generatorReactConfig(env);
   const presets = [
@@ -52,7 +52,7 @@ module.exports = ({ config, options }) => {
       }
     ]
 
-  ].filter(Boolean)
+  ].filter(Boolean);
   const babelConf = {
     env: {
       test: {
@@ -71,7 +71,7 @@ module.exports = ({ config, options }) => {
       ],
       require('@babel/plugin-proposal-optional-chaining'),
       // require('@babel/plugin-proposal-nullish-coalescing-operator').default,
-      [require('babel-plugin-import'), { libraryName: 'antd', style: true }]
+      // [require('babel-plugin-import'), { libraryName: 'antd', style: true }]
     ].filter(Boolean)
   }
 

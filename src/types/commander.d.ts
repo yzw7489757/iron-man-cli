@@ -14,7 +14,7 @@ declare global {
     }
 
     export type InjectCommandConfig = {
-      program: commander.CommanderStatic,
+      program: commander.Command,
       cleanArgs: (cmd: Record<string, any>) => Record<string, any>;
       boxConfig: WebpackConfig.Options,
       commandStore: string[]

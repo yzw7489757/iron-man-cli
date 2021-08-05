@@ -14,9 +14,9 @@
   },
   "include": [
     "bin/index.js",
-    "./*.js",
     "src/**/*.js",
     "build/**/*.js",
-    "./src/types/**/*.d.ts"
+    "src/types/**/*.d.ts",
+    "demo/iron-man.config.js",
   ]
 }

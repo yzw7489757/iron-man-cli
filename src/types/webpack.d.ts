@@ -79,9 +79,10 @@ declare global {
       https?: boolean | https.ServerOptions;
       mock?: boolean;
       host?: string;
+      contentBase?: string | string[];
       env?: {
         typescript?: boolean,
-        react: boolean | ReactConfig
+        react?: boolean | ReactConfig
       }
       alias?: Record<string, string>;
       resources?: ResourceConfig;
@@ -94,7 +95,6 @@ declare global {
       publicPath?: string;
       filename?: string;
       filenameHashing?: boolean;
-
       chainWebpack?: (config: Config) => void;
     }
 

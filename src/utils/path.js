@@ -6,7 +6,7 @@ const fs = require('fs');
  * @param {string} _path 
  * @returns {string} 
  */
-function resolveByCurrentPosition (_path,) {
+function resolveByCurrentPosition (_path) {
   return path.resolve(process.cwd(), _path)
 }
 

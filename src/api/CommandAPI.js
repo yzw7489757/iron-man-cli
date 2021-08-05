@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const program = require('commander')
+const { program } = require('commander')
 const chalk = require('chalk')
 const semver = require('semver')
 const packageConfig = require('../../package.json')
@@ -18,7 +18,7 @@ exports.commandStore = commandStore;
 
 /** @type {WebpackConfig.Options} */
 let boxConfig = {};
-const boxPath = path.join(process.cwd(), 'webpack.config.js');
+const boxPath = path.join(process.cwd(), 'iron-man.config.js');
 if (fs.existsSync(boxPath)) {
   boxConfig = require(boxPath)()
 }
@@ -60,6 +60,7 @@ exports.injectCommand = function (cmd) {
 exports.getAllCommands = function() {
   const localCommanderDir = path.join(__dirname, '..', 'commands')
   const localCommanderFiles = [...fs.readdirSync(localCommanderDir)]
+  
   /**
    * @type {Array<Commander.CommanderStandard>}
    */
@@ -70,17 +71,6 @@ exports.getAllCommands = function() {
     RegisterCommands.push(require(localCommander))
   })
 
-  // const { getAllPluginIdOfPackageJson } = require('@pkb/shared-utils')
-
-  // getAllPluginIdOfPackageJson().forEach((id) => {
-  //   const command = `${id}/command.config.js`
-  //   try {
-  //     const cwd = require(command)
-  //     RegisterCommands.push(cwd)
-  //   } catch (error) {
-  //     console.log(`没有 ${command}`)
-  //   }
-  // })
   return RegisterCommands
 }
 

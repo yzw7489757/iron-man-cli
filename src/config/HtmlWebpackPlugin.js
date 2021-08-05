@@ -1,6 +1,7 @@
 // [html-webpack-plugin 生成html]
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path');
+const { joinByCurrentPosition } = require('../utils/path');
 
 /**
  * @name html-webpack-plugin
@@ -13,10 +14,11 @@ module.exports = ({ config, options }) => {
   let filename = options.filename || 'index.html'
 
   if (options.name && options.pages) {
-    const { name } = options
-    filename = options.pages[name].filename
-    publicPath = options.pages[name].publicPath
-    template = options.pages[name].template
+    const { name, pages } = options;
+    const page = pages[name];
+    filename = page.filename || filename;
+    publicPath = page.publicPath || publicPath;
+    template = joinByCurrentPosition(page.template) || template
   }
 
   return () => {
@@ -24,7 +26,8 @@ module.exports = ({ config, options }) => {
       .use(HtmlWebpackPlugin, [{
         template,
         filename,
-        publicPath
+        publicPath,
+        inject: true
       }])
   }
 }

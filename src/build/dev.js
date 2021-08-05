@@ -12,12 +12,19 @@ module.exports = async function (options) {
   const port = options.port || 8080
   const publicPath = options.publicPath || '/'
 
-  config.target('web')
+  const contentBase = Array.isArray(options.contentBase) ? options.contentBase : [options.contentBase];
+  if(contentBase.indexOf('public') === -1) {
+    contentBase.push('public')
+  }
+
+  config.target('web');
+  
   config.devServer
     .quiet(true)
     .hot(true)
     .host(host)
     .https(https)
+    .contentBase(contentBase.filter(Boolean))
     .disableHostCheck(true)
     .publicPath(publicPath)
     .clientLogLevel('none')
@@ -28,7 +35,6 @@ module.exports = async function (options) {
 
   const compiler = webpack(config.toConfig())
 
-  // 拿到 devServer 参数
   const chainDevServer = compiler.options.devServer;
 
   const server = new WebpackDevServer(

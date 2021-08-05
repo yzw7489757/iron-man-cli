@@ -6,7 +6,7 @@ const path = require('path')
 const PluginAPI = require('../api/PluginAPI')
 const { resolveByCurrentPosition } = require('../utils/path');
 const webpackVersion = require('webpack').version;
-const DevEntryNameInValid = require('../Errors/DevEntryNameInValid');
+const ErrorDevEntryNameInValid = require('../Errors/DevEntryNameInValid');
 const { validatorEntry } = require('../utils/validatorEntry');
 
 // const webpackVersion = require(resolveByCurrentPosition('node_modules/webpack/package.json')).version
@@ -16,17 +16,17 @@ const { validatorEntry } = require('../utils/validatorEntry');
  * @returns 
  */
 module.exports = (options) => {
-  const { name, pages } = options;
+  const { name, pages = {} } = options;
   const configPath = path.join(__dirname, '..', 'config');
-
-  if(Reflect.get(pages, name) === undefined) {
-    new DevEntryNameInValid(name).print().exits();
-  }
 
   // 检查
   validatorEntry(options.pages[name], true);
 
-  const files = fs.readdirSync(configPath)
+  if(Reflect.get(pages, name) === undefined) {
+    throw new ErrorDevEntryNameInValid(name).print().exits();
+  }
+
+  const files = fs.readdirSync(configPath);
   /** @type {Array<[string, WebpackConfig.LocalConfigIterator]>} */
   const innerConfigs = files.map((fileName) => {
     return [fileName, require(`${configPath}/${fileName}`)]
